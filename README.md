@@ -129,7 +129,8 @@ cd book-tracker-api
 
 # Rodar a aplicação
 ./mvnw spring-boot:run
-📌 Observações
+
+# 📌 Observações
 
 Este projeto está em fase inicial de desenvolvimento, então:
 
