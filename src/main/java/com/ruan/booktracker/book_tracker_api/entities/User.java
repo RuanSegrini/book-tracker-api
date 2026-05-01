@@ -2,6 +2,7 @@ package com.ruan.booktracker.book_tracker_api.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -19,10 +20,12 @@ public class User implements Serializable {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String name;
 
 
     @Column(unique = true, nullable = false)
+    @NotBlank
     @Email
     private String email;
 

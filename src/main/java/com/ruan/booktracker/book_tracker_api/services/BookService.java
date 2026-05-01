@@ -1,0 +1,53 @@
+package com.ruan.booktracker.book_tracker_api.services;
+
+import java.util.List;
+import java.util.Optional;
+
+
+import com.ruan.booktracker.book_tracker_api.entities.Book;
+import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
+import com.ruan.booktracker.book_tracker_api.repositories.BookRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class BookService {
+
+    @Autowired
+    private BookRepository repository;
+
+    public List<Book> findAll() {
+        return repository.findAll();
+    }
+
+    public Book findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
+    }
+
+    public Book insert(Book obj) {
+        return repository.save(obj);
+    }
+
+    public Book update(Long id, Book obj) {
+        Book entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
+
+        updateData(entity, obj);
+        return repository.save(entity);
+    }
+
+    private void updateData(Book entity, Book obj) {
+        entity.setTitle(obj.getTitle());
+        entity.setAuthor(obj.getAuthor());
+        entity.setTotalPages(obj.getTotalPages());
+        entity.setGenre(obj.getGenre());
+    }
+
+    public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException(id);
+        }
+        repository.deleteById(id);
+    }
+}

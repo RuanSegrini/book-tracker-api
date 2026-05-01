@@ -1,6 +1,9 @@
 package com.ruan.booktracker.book_tracker_api.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,12 +21,16 @@ public class Book implements Serializable {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String title;
 
     @Column(nullable = false)
+    @NotBlank
     private String author;
 
     @Column(nullable = false)
+    @NotNull(message = "Total pages is required")
+    @Min(value = 1, message = "Total pages must be at least 1")
     private Integer totalPages;
 
     @Enumerated(EnumType.STRING)
@@ -41,7 +48,6 @@ public class Book implements Serializable {
     public Book() {
     }
 
-    // 🔥 removi createdAt do construtor (boa prática)
     public Book(Long id, String title, String author, Integer totalPages, Genre genre) {
         this.id = id;
         this.title = title;
@@ -93,7 +99,6 @@ public class Book implements Serializable {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    
 
     @Override
     public boolean equals(Object o) {
