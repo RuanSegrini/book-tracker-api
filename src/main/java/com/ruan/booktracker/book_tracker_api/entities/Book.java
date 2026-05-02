@@ -1,5 +1,6 @@
 package com.ruan.booktracker.book_tracker_api.entities;
 
+import com.ruan.booktracker.book_tracker_api.entities.enums.Genre;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
