@@ -50,6 +50,13 @@ public class Reading implements Serializable {
     public Reading() {
     }
 
+    public Reading(Long id, Integer currentPage, ReadingStatus status, LocalDateTime finishedAt) {
+        this.id = id;
+        this.currentPage = currentPage;
+        this.status = status;
+        this.finishedAt = finishedAt;
+    }
+
     public Long getId() {
         return id;
     }
