@@ -11,5 +11,6 @@ public enum Genre {
     DRAMA,
     ACTION,
     ADVENTURE,
-    BIOGRAPHY;
+    BIOGRAPHY,
+    SCIENCE;
 }

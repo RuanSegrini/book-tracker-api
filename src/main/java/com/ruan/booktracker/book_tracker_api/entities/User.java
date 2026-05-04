@@ -1,5 +1,6 @@
 package com.ruan.booktracker.book_tracker_api.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_user")
@@ -41,15 +43,18 @@ public class User implements Serializable {
         createdAt = LocalDateTime.now();
     }
 
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private List<Reading> readings;
+
     public User() {
     }
 
-    public User(Long id, String name, String email, String password, LocalDateTime createdAt) {
+    public User(Long id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.createdAt = createdAt;
     }
 
     public Long getId() {

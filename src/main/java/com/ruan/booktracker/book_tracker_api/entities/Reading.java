@@ -1,5 +1,6 @@
 package com.ruan.booktracker.book_tracker_api.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ruan.booktracker.book_tracker_api.entities.enums.ReadingStatus;
 import jakarta.persistence.*;
 
@@ -34,7 +35,7 @@ public class Reading implements Serializable {
     private LocalDateTime finishedAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     @ManyToOne
@@ -50,11 +51,12 @@ public class Reading implements Serializable {
     public Reading() {
     }
 
-    public Reading(Long id, Integer currentPage, ReadingStatus status, LocalDateTime finishedAt) {
+    public Reading(Long id, Integer currentPage, ReadingStatus status, User user, Book book) {
         this.id = id;
         this.currentPage = currentPage;
         this.status = status;
-        this.finishedAt = finishedAt;
+        this.user = user;
+        this.book = book;
     }
 
     public Long getId() {
