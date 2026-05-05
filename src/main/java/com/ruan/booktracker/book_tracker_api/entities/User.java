@@ -16,7 +16,6 @@ public class User implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +23,6 @@ public class User implements Serializable {
     @Column(nullable = false)
     @NotBlank
     private String name;
-
 
     @Column(unique = true, nullable = false)
     @NotBlank
