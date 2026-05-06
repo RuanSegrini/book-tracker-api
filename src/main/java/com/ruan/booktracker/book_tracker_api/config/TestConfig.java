@@ -1,13 +1,9 @@
 package com.ruan.booktracker.book_tracker_api.config;
 
-import com.ruan.booktracker.book_tracker_api.entities.Book;
-import com.ruan.booktracker.book_tracker_api.entities.Reading;
-import com.ruan.booktracker.book_tracker_api.entities.User;
+import com.ruan.booktracker.book_tracker_api.entities.*;
 import com.ruan.booktracker.book_tracker_api.entities.enums.Genre;
 import com.ruan.booktracker.book_tracker_api.entities.enums.ReadingStatus;
-import com.ruan.booktracker.book_tracker_api.repositories.BookRepository;
-import com.ruan.booktracker.book_tracker_api.repositories.ReadingRepository;
-import com.ruan.booktracker.book_tracker_api.repositories.UserRepository;
+import com.ruan.booktracker.book_tracker_api.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +24,12 @@ public class TestConfig implements CommandLineRunner {
 
     @Autowired
     private ReadingRepository readingRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -59,5 +61,31 @@ public class TestConfig implements CommandLineRunner {
         r2.setFinishedAt(LocalDateTime.now());
 
         readingRepository.saveAll(Arrays.asList(r1, r2));
+
+        // REVIEWS
+        Review rev1 = new Review();
+        rev1.setUser(u1);
+        rev1.setBook(b1);
+        rev1.setRating(5);
+        rev1.setComment("Excelente livro!");
+
+        Review rev2 = new Review();
+        rev2.setUser(u2);
+        rev2.setBook(b2);
+        rev2.setRating(4);
+        rev2.setComment("Muito bom!");
+
+        reviewRepository.saveAll(Arrays.asList(rev1, rev2));
+
+        // FAVORITES
+        Favorite f1 = new Favorite();
+        f1.setUser(u1);
+        f1.setBook(b2);
+
+        Favorite f2 = new Favorite();
+        f2.setUser(u2);
+        f2.setBook(b1);
+
+        favoriteRepository.saveAll(Arrays.asList(f1, f2));
     }
 }
