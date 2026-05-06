@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -21,6 +22,7 @@ public class Review implements Serializable {
     private Long id;
 
     @Column(nullable = false)
+    @NotNull
     @Min(1)
     @Max(5)
     private Integer rating;
@@ -54,8 +56,6 @@ public class Review implements Serializable {
         this.user = user;
         this.book = book;
     }
-
-    // getters e setters
 
     public Long getId() {
         return id;
