@@ -1,6 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
 
+import com.ruan.booktracker.book_tracker_api.dto.UserDTO;
 import com.ruan.booktracker.book_tracker_api.entities.User;
 import com.ruan.booktracker.book_tracker_api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,14 @@ public class UserResource {
     private UserService service;
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll(){
-        List<User> list = service.findAll();
+    public ResponseEntity<List<UserDTO>> findAll(){
+        List<UserDTO> list = service.findAll();
         return ResponseEntity.ok().body(list);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
-        User obj = service.findById(id);
+    public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
+        UserDTO obj = service.findById(id);
         return ResponseEntity.ok().body(obj);
     }
 

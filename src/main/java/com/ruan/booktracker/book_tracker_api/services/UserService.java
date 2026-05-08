@@ -3,6 +3,9 @@ package com.ruan.booktracker.book_tracker_api.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.ruan.booktracker.book_tracker_api.dto.ReviewDTO;
+import com.ruan.booktracker.book_tracker_api.dto.UserDTO;
+import com.ruan.booktracker.book_tracker_api.entities.Review;
 import com.ruan.booktracker.book_tracker_api.entities.User;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.UserRepository;
@@ -15,13 +18,19 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    public List<User> findAll() {
-        return repository.findAll();
+    public List<UserDTO> findAll() {
+        List<User> list= repository.findAll();
+
+        return list.stream()
+                .map(UserDTO::new)
+                .toList();
     }
 
-    public User findById(Long id) {
-        Optional<User> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
+    public UserDTO findById(Long id) {
+        User entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
+
+        return new UserDTO(entity);
     }
 
     public User insert(User obj) {
