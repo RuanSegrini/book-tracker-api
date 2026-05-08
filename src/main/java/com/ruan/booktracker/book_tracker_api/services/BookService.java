@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 
+import com.ruan.booktracker.book_tracker_api.dto.BookDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Book;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.BookRepository;
@@ -16,13 +17,19 @@ public class BookService {
     @Autowired
     private BookRepository repository;
 
-    public List<Book> findAll() {
-        return repository.findAll();
+    public List<BookDTO> findAll() {
+        List<Book> list = repository.findAll();
+
+        return list.stream()
+                .map(BookDTO::new)
+                .toList();
     }
 
-    public Book findById(Long id) {
-        return repository.findById(id)
+    public BookDTO findById(Long id) {
+        Book entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
+
+        return new BookDTO(entity);
     }
 
     public Book insert(Book obj) {
