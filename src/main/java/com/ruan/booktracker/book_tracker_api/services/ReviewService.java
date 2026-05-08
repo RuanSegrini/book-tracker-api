@@ -1,5 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.services;
 
+import com.ruan.booktracker.book_tracker_api.dto.FavoriteDTO;
+import com.ruan.booktracker.book_tracker_api.dto.ReviewDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Review;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.ReviewRepository;
@@ -14,13 +16,19 @@ public class ReviewService {
     @Autowired
     private ReviewRepository repository;
 
-    public List<Review> findAll() {
-        return repository.findAll();
+    public List<ReviewDTO> findAll() {
+        List<Review> list = repository.findAll();
+
+        return list.stream()
+                .map(ReviewDTO::new)
+                .toList();
     }
 
-    public Review findById(Long id) {
-        return repository.findById(id)
+    public ReviewDTO findById(Long id) {
+            Review entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
+
+            return new ReviewDTO(entity);
     }
 
     public Review insert(Review obj) {
