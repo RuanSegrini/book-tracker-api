@@ -1,6 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
 
+import com.ruan.booktracker.book_tracker_api.dto.BookDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Book;
 import com.ruan.booktracker.book_tracker_api.services.BookService;
 import jakarta.validation.Valid;
@@ -20,14 +21,14 @@ public class BookResource {
     private BookService service;
 
     @GetMapping
-    public ResponseEntity<List<Book>> findAll(){
-        List<Book> list = service.findAll();
+    public ResponseEntity<List<BookDTO>> findAll(){
+        List<BookDTO> list = service.findAll();
         return ResponseEntity.ok().body(list);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Book> findById(@PathVariable Long id) {
-        Book obj = service.findById(id);
+    public ResponseEntity<BookDTO> findById(@PathVariable Long id) {
+        BookDTO obj = service.findById(id);
         return ResponseEntity.ok().body(obj);
     }
 

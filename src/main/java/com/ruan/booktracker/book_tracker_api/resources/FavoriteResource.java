@@ -1,5 +1,6 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
+import com.ruan.booktracker.book_tracker_api.dto.FavoriteDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Favorite;
 import com.ruan.booktracker.book_tracker_api.services.FavoriteService;
 import jakarta.validation.Valid;
@@ -19,14 +20,14 @@ public class FavoriteResource {
     private FavoriteService service;
 
     @GetMapping
-    public ResponseEntity<List<Favorite>> findAll() {
-        List<Favorite> list = service.findAll();
+    public ResponseEntity<List<FavoriteDTO>> findAll() {
+        List<FavoriteDTO> list = service.findAll();
         return ResponseEntity.ok().body(list);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Favorite> findById(@PathVariable Long id) {
-        Favorite obj = service.findById(id);
+    public ResponseEntity<FavoriteDTO> findById(@PathVariable Long id) {
+        FavoriteDTO obj = service.findById(id);
         return ResponseEntity.ok().body(obj);
     }
 

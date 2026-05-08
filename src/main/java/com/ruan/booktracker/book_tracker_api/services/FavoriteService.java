@@ -1,5 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.services;
 
+
+import com.ruan.booktracker.book_tracker_api.dto.FavoriteDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Favorite;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.FavoriteRepository;
@@ -14,13 +16,19 @@ public class FavoriteService {
     @Autowired
     private FavoriteRepository repository;
 
-    public List<Favorite> findAll() {
-        return repository.findAll();
+    public List<FavoriteDTO> findAll() {
+        List<Favorite> list = repository.findAll();
+
+        return list.stream()
+                .map(FavoriteDTO::new)
+                .toList();
     }
 
-    public Favorite findById(Long id) {
-        return repository.findById(id)
+    public FavoriteDTO findById(Long id) {
+        Favorite entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
+
+        return new FavoriteDTO(entity);
     }
 
     public Favorite insert(Favorite obj) {
