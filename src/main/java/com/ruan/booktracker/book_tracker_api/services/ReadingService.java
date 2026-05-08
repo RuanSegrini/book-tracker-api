@@ -1,6 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.services;
 
 
+import com.ruan.booktracker.book_tracker_api.dto.ReadingDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Reading;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.ReadingRepository;
@@ -15,13 +16,19 @@ public class ReadingService {
     @Autowired
     private ReadingRepository repository;
 
-    public List<Reading> findAll() {
-        return repository.findAll();
+    public List<ReadingDTO> findAll() {
+        List<Reading> list =repository.findAll();
+
+        return list.stream()
+                .map(ReadingDTO::new)
+                .toList();
     }
 
-    public Reading findById(Long id) {
-        return repository.findById(id)
+    public ReadingDTO findById(Long id) {
+        Reading entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
+
+        return new ReadingDTO(entity);
     }
 
     public Reading insert(Reading obj) {
