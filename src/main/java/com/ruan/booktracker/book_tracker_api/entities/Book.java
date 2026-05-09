@@ -22,16 +22,12 @@ public class Book implements Serializable {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank
     private String title;
 
     @Column(nullable = false)
-    @NotBlank
     private String author;
 
     @Column(nullable = false)
-    @NotNull(message = "Total pages is required")
-    @Min(value = 1, message = "Total pages must be at least 1")
     private Integer totalPages;
 
     @Enumerated(EnumType.STRING)
