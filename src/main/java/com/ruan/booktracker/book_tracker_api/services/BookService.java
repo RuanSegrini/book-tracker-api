@@ -3,6 +3,7 @@ package com.ruan.booktracker.book_tracker_api.services;
 import java.util.List;
 
 
+import com.ruan.booktracker.book_tracker_api.dto.book.BookCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.book.BookDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Book;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
@@ -31,8 +32,18 @@ public class BookService {
         return new BookDTO(entity);
     }
 
-    public Book insert(Book obj) {
-        return repository.save(obj);
+    public BookDTO insert(BookCreateDTO dto) {
+
+        Book entity = new Book();
+
+        entity.setTitle(dto.title());
+        entity.setAuthor(dto.author());
+        entity.setTotalPages(dto.totalPages());
+        entity.setGenre(dto.genre());
+
+        entity = repository.save(entity);
+
+        return new BookDTO(entity);
     }
 
     public Book update(Long id, Book obj) {

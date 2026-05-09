@@ -11,7 +11,7 @@ public record BookDTO(
         String author,
         Integer totalPages,
         Genre genre,
-        LocalDateTime createdAt 
+        LocalDateTime createdAt
 ) {
 
     public BookDTO(Book entity) {
