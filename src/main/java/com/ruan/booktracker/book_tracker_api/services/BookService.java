@@ -1,10 +1,9 @@
 package com.ruan.booktracker.book_tracker_api.services;
 
 import java.util.List;
-import java.util.Optional;
 
 
-import com.ruan.booktracker.book_tracker_api.dto.BookDTO;
+import com.ruan.booktracker.book_tracker_api.dto.book.BookDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Book;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.BookRepository;

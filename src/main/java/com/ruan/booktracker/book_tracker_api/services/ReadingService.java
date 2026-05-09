@@ -1,7 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.services;
 
 
-import com.ruan.booktracker.book_tracker_api.dto.ReadingDTO;
+import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Reading;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.ReadingRepository;

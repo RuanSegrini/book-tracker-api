@@ -1,7 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
 
-import com.ruan.booktracker.book_tracker_api.dto.UserDTO;
+import com.ruan.booktracker.book_tracker_api.dto.user.UserDTO;
 import com.ruan.booktracker.book_tracker_api.entities.User;
 import com.ruan.booktracker.book_tracker_api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

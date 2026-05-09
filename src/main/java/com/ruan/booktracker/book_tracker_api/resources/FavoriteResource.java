@@ -1,6 +1,6 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
-import com.ruan.booktracker.book_tracker_api.dto.FavoriteDTO;
+import com.ruan.booktracker.book_tracker_api.dto.favorite.FavoriteDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Favorite;
 import com.ruan.booktracker.book_tracker_api.services.FavoriteService;
 import jakarta.validation.Valid;

@@ -1,7 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.services;
 
 
-import com.ruan.booktracker.book_tracker_api.dto.FavoriteDTO;
+import com.ruan.booktracker.book_tracker_api.dto.favorite.FavoriteDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Favorite;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.FavoriteRepository;

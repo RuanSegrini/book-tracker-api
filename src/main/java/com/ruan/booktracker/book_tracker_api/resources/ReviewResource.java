@@ -1,7 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
 
-import com.ruan.booktracker.book_tracker_api.dto.ReviewDTO;
+import com.ruan.booktracker.book_tracker_api.dto.review.ReviewDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Review;
 import com.ruan.booktracker.book_tracker_api.services.ReviewService;
 import jakarta.validation.Valid;
