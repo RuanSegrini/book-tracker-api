@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ruan.booktracker.book_tracker_api.dto.book.BookCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.book.BookDTO;
+import com.ruan.booktracker.book_tracker_api.dto.book.BookUpdateDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Book;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.BookRepository;
@@ -46,19 +47,24 @@ public class BookService {
         return new BookDTO(entity);
     }
 
-    public Book update(Long id, Book obj) {
+    public BookDTO update(Long id, BookUpdateDTO dto) {
+
         Book entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
 
-        updateData(entity, obj);
-        return repository.save(entity);
+        updateData(entity, dto);
+
+        entity = repository.save(entity);
+
+        return new BookDTO(entity);
     }
 
-    private void updateData(Book entity, Book obj) {
-        entity.setTitle(obj.getTitle());
-        entity.setAuthor(obj.getAuthor());
-        entity.setTotalPages(obj.getTotalPages());
-        entity.setGenre(obj.getGenre());
+    private void updateData(Book entity, BookUpdateDTO dto) {
+
+        entity.setTitle(dto.title());
+        entity.setAuthor(dto.author());
+        entity.setTotalPages(dto.totalPages());
+        entity.setGenre(dto.genre());
     }
 
     public void delete(Long id) {

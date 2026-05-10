@@ -3,7 +3,7 @@ package com.ruan.booktracker.book_tracker_api.resources;
 
 import com.ruan.booktracker.book_tracker_api.dto.book.BookCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.book.BookDTO;
-import com.ruan.booktracker.book_tracker_api.entities.Book;
+import com.ruan.booktracker.book_tracker_api.dto.book.BookUpdateDTO;
 import com.ruan.booktracker.book_tracker_api.services.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +50,9 @@ public class BookResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Book> update(@PathVariable Long id, @RequestBody @Valid Book obj) {
-        obj = service.update(id, obj);
+    public ResponseEntity<BookDTO> update(@PathVariable Long id, @RequestBody @Valid BookUpdateDTO dto) {
+
+        BookDTO obj = service.update(id, dto);
         return ResponseEntity.ok(obj);
     }
 
