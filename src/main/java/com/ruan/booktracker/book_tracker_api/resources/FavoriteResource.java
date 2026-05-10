@@ -1,5 +1,6 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
+import com.ruan.booktracker.book_tracker_api.dto.favorite.FavoriteCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.favorite.FavoriteDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Favorite;
 import com.ruan.booktracker.book_tracker_api.services.FavoriteService;
@@ -32,16 +33,19 @@ public class FavoriteResource {
     }
 
     @PostMapping
-    public ResponseEntity<Favorite> insert(@RequestBody @Valid Favorite obj) {
-        obj = service.insert(obj);
+    public ResponseEntity<FavoriteDTO> insert(
+            @RequestBody @Valid FavoriteCreateDTO dto
+    ) {
+
+        FavoriteDTO response = service.insert(dto);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(obj.getId())
+                .buildAndExpand(response.id())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(obj);
+        return ResponseEntity.created(uri).body(response);
     }
 
     @DeleteMapping(value = "/{id}")

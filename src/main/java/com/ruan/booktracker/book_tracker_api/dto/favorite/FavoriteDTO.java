@@ -3,12 +3,17 @@ package com.ruan.booktracker.book_tracker_api.dto.favorite;
 import com.ruan.booktracker.book_tracker_api.entities.Favorite;
 
 public record FavoriteDTO(
-        Long id
-) {
 
+        Long id,
+        Long userId,
+        Long bookId
+
+) {
     public FavoriteDTO(Favorite entity) {
         this(
-                entity.getId()
+                entity.getId(),
+                entity.getUser().getId(),
+                entity.getBook().getId()
         );
     }
 }
