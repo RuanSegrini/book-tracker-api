@@ -1,6 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
 
+import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Reading;
 import com.ruan.booktracker.book_tracker_api.services.ReadingService;
@@ -33,15 +34,15 @@ public class ReadingResource {
     }
 
     @PostMapping
-    public ResponseEntity<Reading> insert(@RequestBody @Valid Reading obj) {
-        obj = service.insert(obj);
+    public ResponseEntity<ReadingDTO> insert(@RequestBody @Valid ReadingCreateDTO dto) {
+        ReadingDTO readingDTO = service.insert(dto);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(obj.getId())
+                .buildAndExpand(readingDTO.id())
                 .toUri();
-        return ResponseEntity.created(uri).body(obj);
+        return ResponseEntity.created(uri).body(readingDTO);
     }
 
     @PutMapping(value = "/{id}")

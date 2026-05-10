@@ -1,10 +1,15 @@
 package com.ruan.booktracker.book_tracker_api.services;
 
 
+import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingDTO;
+import com.ruan.booktracker.book_tracker_api.entities.Book;
 import com.ruan.booktracker.book_tracker_api.entities.Reading;
+import com.ruan.booktracker.book_tracker_api.entities.User;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
+import com.ruan.booktracker.book_tracker_api.repositories.BookRepository;
 import com.ruan.booktracker.book_tracker_api.repositories.ReadingRepository;
+import com.ruan.booktracker.book_tracker_api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +20,12 @@ public class ReadingService {
 
     @Autowired
     private ReadingRepository repository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     public List<ReadingDTO> findAll() {
         List<Reading> list =repository.findAll();
@@ -31,8 +42,25 @@ public class ReadingService {
         return new ReadingDTO(entity);
     }
 
-    public Reading insert(Reading obj) {
-        return repository.save(obj);
+    public ReadingDTO insert(ReadingCreateDTO dto) {
+
+        User user = userRepository.findById(dto.userId())
+                .orElseThrow(() -> new ResourceNotFoundException(dto.userId()));
+
+        Book book = bookRepository.findById(dto.bookId())
+                .orElseThrow(() -> new ResourceNotFoundException(dto.bookId()));
+
+        Reading entity = new Reading();
+
+        entity.setCurrentPage(dto.currentPage());
+        entity.setStatus(dto.status());
+
+        entity.setUser(user);
+        entity.setBook(book);
+
+        entity = repository.save(entity);
+
+        return new ReadingDTO(entity);
     }
 
     public Reading update(Long id, Reading obj) {
