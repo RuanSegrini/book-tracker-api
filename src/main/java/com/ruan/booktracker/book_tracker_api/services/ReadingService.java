@@ -3,6 +3,7 @@ package com.ruan.booktracker.book_tracker_api.services;
 
 import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingDTO;
+import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingUpdateDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Book;
 import com.ruan.booktracker.book_tracker_api.entities.Reading;
 import com.ruan.booktracker.book_tracker_api.entities.User;
@@ -63,21 +64,20 @@ public class ReadingService {
         return new ReadingDTO(entity);
     }
 
-    public Reading update(Long id, Reading obj) {
+    public ReadingDTO update(Long id, ReadingUpdateDTO dto) {
         Reading entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
 
-        updateData(entity, obj);
-        return repository.save(entity);
+        updateData(entity, dto);
+
+        entity = repository.save(entity);
+
+        return new ReadingDTO(entity);
     }
 
-    private void updateData(Reading entity, Reading obj) {
-        entity.setCurrentPage(obj.getCurrentPage());
-        entity.setStatus(obj.getStatus());
-        entity.setStartedAt(obj.getStartedAt());
-        entity.setFinishedAt(obj.getFinishedAt());
-        entity.setUser(obj.getUser());
-        entity.setBook(obj.getBook());
+    private void updateData(Reading entity, ReadingUpdateDTO dto) {
+        entity.setCurrentPage(dto.currentPage());
+        entity.setStatus(dto.status());
     }
 
     public void delete(Long id) {

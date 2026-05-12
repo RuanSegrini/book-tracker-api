@@ -3,6 +3,7 @@ package com.ruan.booktracker.book_tracker_api.resources;
 
 import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingDTO;
+import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingUpdateDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Reading;
 import com.ruan.booktracker.book_tracker_api.services.ReadingService;
 import jakarta.validation.Valid;
@@ -46,8 +47,8 @@ public class ReadingResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Reading> update(@PathVariable Long id, @RequestBody @Valid Reading obj) {
-        obj = service.update(id, obj);
+    public ResponseEntity<ReadingDTO> update(@PathVariable Long id, @RequestBody @Valid ReadingUpdateDTO dto) {
+        ReadingDTO obj = service.update(id, dto);
         return ResponseEntity.ok(obj);
     }
 
