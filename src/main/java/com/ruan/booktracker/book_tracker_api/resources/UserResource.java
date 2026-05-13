@@ -1,9 +1,12 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
 
+import com.ruan.booktracker.book_tracker_api.dto.user.UserCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.user.UserDTO;
+import com.ruan.booktracker.book_tracker_api.dto.user.UserUpdateDTO;
 import com.ruan.booktracker.book_tracker_api.entities.User;
 import com.ruan.booktracker.book_tracker_api.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,21 +36,21 @@ public class UserResource {
 
 
     @PostMapping
-    public ResponseEntity<User> insert(@RequestBody User obj) {
-        obj = service.insert(obj);
+    public ResponseEntity<UserDTO> insert(@RequestBody @Valid UserCreateDTO dto) {
+        UserDTO userDTO = service.insert(dto);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(obj.getId())
+                .buildAndExpand(userDTO.id())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(obj);
+        return ResponseEntity.created(uri).body(userDTO);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User obj) {
-        obj = service.update(id, obj);
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody @Valid UserUpdateDTO dto) {
+        UserDTO obj = service.update(id, dto);
         return ResponseEntity.ok(obj);
     }
 

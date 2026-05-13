@@ -2,7 +2,9 @@ package com.ruan.booktracker.book_tracker_api.services;
 
 import java.util.List;
 
+import com.ruan.booktracker.book_tracker_api.dto.user.UserCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.user.UserDTO;
+import com.ruan.booktracker.book_tracker_api.dto.user.UserUpdateDTO;
 import com.ruan.booktracker.book_tracker_api.entities.User;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.UserRepository;
@@ -30,22 +32,33 @@ public class UserService {
         return new UserDTO(entity);
     }
 
-    public User insert(User obj) {
-        return repository.save(obj);
+    public UserDTO insert(UserCreateDTO dto) {
+
+        User entity = new User();
+
+        entity.setName(dto.name());
+        entity.setEmail(dto.email());
+        entity.setPassword(dto.password());
+
+        entity = repository.save(entity);
+
+        return new UserDTO(entity);
     }
 
-    public User update(Long id, User obj) {
+    public UserDTO update(Long id, UserUpdateDTO dto) {
         User entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
 
-        updateData(entity, obj);
-        return repository.save(entity);
+        updateData(dto, entity);
+
+        entity = repository.save(entity);
+
+        return new UserDTO(entity);
     }
 
-    private void updateData(User entity, User obj) {
-        entity.setName(obj.getName());
-        entity.setEmail(obj.getEmail());
-        entity.setPassword(obj.getPassword());
+    private void updateData(UserUpdateDTO dto,User entity ) {
+        entity.setName(dto.name());
+        entity.setEmail(dto.email());
     }
 
     public void delete(Long id) {
