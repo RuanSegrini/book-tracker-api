@@ -1,9 +1,14 @@
 package com.ruan.booktracker.book_tracker_api.services;
 
+import com.ruan.booktracker.book_tracker_api.dto.review.ReviewCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.review.ReviewDTO;
+import com.ruan.booktracker.book_tracker_api.entities.Book;
 import com.ruan.booktracker.book_tracker_api.entities.Review;
+import com.ruan.booktracker.book_tracker_api.entities.User;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
+import com.ruan.booktracker.book_tracker_api.repositories.BookRepository;
 import com.ruan.booktracker.book_tracker_api.repositories.ReviewRepository;
+import com.ruan.booktracker.book_tracker_api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +19,12 @@ public class ReviewService {
 
     @Autowired
     private ReviewRepository repository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     public List<ReviewDTO> findAll() {
         List<Review> list = repository.findAll();
@@ -30,17 +41,24 @@ public class ReviewService {
             return new ReviewDTO(entity);
     }
 
-    public Review insert(Review obj) {
+    public ReviewDTO insert(ReviewCreateDTO dto) {
 
-        if (obj.getUser() == null || obj.getBook() == null) {
-            throw new RuntimeException("Review must have a user and a book");
-        }
+        User user = userRepository.findById(dto.userId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (obj.getRating() == null || obj.getRating() < 1 || obj.getRating() > 5) {
-            throw new RuntimeException("Rating must be between 1 and 5");
-        }
+        Book book = bookRepository.findById(dto.bookId())
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
 
-        return repository.save(obj);
+        Review entity = new Review();
+
+        entity.setUser(user);
+        entity.setBook(book);
+        entity.setRating(dto.rating());
+        entity.setComment(dto.comment());
+
+        entity = repository.save(entity);
+
+        return new ReviewDTO(entity);
     }
 
     public Review update(Long id, Review obj) {

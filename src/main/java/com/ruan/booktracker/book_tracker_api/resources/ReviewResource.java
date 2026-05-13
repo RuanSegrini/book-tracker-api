@@ -1,6 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
 
+import com.ruan.booktracker.book_tracker_api.dto.review.ReviewCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.review.ReviewDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Review;
 import com.ruan.booktracker.book_tracker_api.services.ReviewService;
@@ -33,15 +34,15 @@ public class ReviewResource {
     }
 
     @PostMapping
-    public ResponseEntity<Review> insert(@RequestBody @Valid Review obj) {
-        obj = service.insert(obj);
+    public ResponseEntity<ReviewDTO> insert(@RequestBody @Valid ReviewCreateDTO dto) {
+        ReviewDTO reviewDTO = service.insert(dto);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(obj.getId())
+                .buildAndExpand(reviewDTO.id())
                 .toUri();
-        return ResponseEntity.created(uri).body(obj);
+        return ResponseEntity.created(uri).body(reviewDTO);
     }
 
     @PutMapping(value = "/{id}")
