@@ -2,6 +2,7 @@ package com.ruan.booktracker.book_tracker_api.services;
 
 import com.ruan.booktracker.book_tracker_api.dto.review.ReviewCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.review.ReviewDTO;
+import com.ruan.booktracker.book_tracker_api.dto.review.ReviewUpdateDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Book;
 import com.ruan.booktracker.book_tracker_api.entities.Review;
 import com.ruan.booktracker.book_tracker_api.entities.User;
@@ -61,17 +62,20 @@ public class ReviewService {
         return new ReviewDTO(entity);
     }
 
-    public Review update(Long id, Review obj) {
+    public ReviewDTO update(Long id, ReviewUpdateDTO dto) {
         Review entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
 
-        updateData(entity, obj);
-        return repository.save(entity);
+        copyDtoToEntity(dto, entity);
+
+        entity = repository.save(entity);
+
+        return new ReviewDTO(entity);
     }
 
-    private void updateData(Review entity, Review obj) {
-        entity.setRating(obj.getRating());
-        entity.setComment(obj.getComment());
+    private void copyDtoToEntity(ReviewUpdateDTO dto, Review entity) {
+        entity.setRating(dto.rating());
+        entity.setComment(dto.comment());
     }
 
     public void delete(Long id) {

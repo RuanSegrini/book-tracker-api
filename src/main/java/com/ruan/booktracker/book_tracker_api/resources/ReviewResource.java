@@ -3,6 +3,7 @@ package com.ruan.booktracker.book_tracker_api.resources;
 
 import com.ruan.booktracker.book_tracker_api.dto.review.ReviewCreateDTO;
 import com.ruan.booktracker.book_tracker_api.dto.review.ReviewDTO;
+import com.ruan.booktracker.book_tracker_api.dto.review.ReviewUpdateDTO;
 import com.ruan.booktracker.book_tracker_api.entities.Review;
 import com.ruan.booktracker.book_tracker_api.services.ReviewService;
 import jakarta.validation.Valid;
@@ -46,8 +47,8 @@ public class ReviewResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Review> update(@PathVariable Long id, @RequestBody @Valid Review obj) {
-        obj = service.update(id, obj);
+    public ResponseEntity<ReviewDTO> update(@PathVariable Long id, @RequestBody @Valid ReviewUpdateDTO dto) {
+        ReviewDTO obj = service.update(id, dto);
         return ResponseEntity.ok(obj);
     }
 
