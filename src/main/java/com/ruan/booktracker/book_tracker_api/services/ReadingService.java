@@ -82,6 +82,14 @@ public class ReadingService {
         return new ReadingResponse(entity);
     }
 
+    public List<ReadingResponse> findByUserId(UUID userId) {
+        return repository.findByUserId(userId).stream().map(ReadingResponse::new).toList();
+    }
+
+    public List<ReadingResponse> findByBookId(UUID bookId) {
+        return repository.findByBookId(bookId).stream().map(ReadingResponse::new).toList();
+    }
+
     public void delete(UUID id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Reading", id);

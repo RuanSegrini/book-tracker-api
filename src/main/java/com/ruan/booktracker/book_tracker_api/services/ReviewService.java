@@ -78,6 +78,14 @@ public class ReviewService {
         return new ReviewResponse(entity);
     }
 
+    public List<ReviewResponse> findByUserId(UUID userId) {
+        return repository.findByUserId(userId).stream().map(ReviewResponse::new).toList();
+    }
+
+    public List<ReviewResponse> findByBookId(UUID bookId) {
+        return repository.findByBookId(bookId).stream().map(ReviewResponse::new).toList();
+    }
+
     public void delete(UUID id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Review", id);

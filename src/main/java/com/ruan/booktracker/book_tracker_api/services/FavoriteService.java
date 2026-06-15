@@ -56,6 +56,10 @@ public class FavoriteService {
         return new FavoriteResponse(entity);
     }
 
+    public List<FavoriteResponse> findByUserId(UUID userId) {
+        return repository.findByUserId(userId).stream().map(FavoriteResponse::new).toList();
+    }
+
     public void delete(UUID id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Favorite", id);

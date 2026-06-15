@@ -1,8 +1,14 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
+import com.ruan.booktracker.book_tracker_api.dto.favorite.response.FavoriteResponse;
+import com.ruan.booktracker.book_tracker_api.dto.reading.response.ReadingResponse;
+import com.ruan.booktracker.book_tracker_api.dto.review.response.ReviewResponse;
 import com.ruan.booktracker.book_tracker_api.dto.user.request.CreateUserRequest;
 import com.ruan.booktracker.book_tracker_api.dto.user.request.UpdateUserRequest;
 import com.ruan.booktracker.book_tracker_api.dto.user.response.UserResponse;
+import com.ruan.booktracker.book_tracker_api.services.FavoriteService;
+import com.ruan.booktracker.book_tracker_api.services.ReadingService;
+import com.ruan.booktracker.book_tracker_api.services.ReviewService;
 import com.ruan.booktracker.book_tracker_api.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +24,15 @@ import java.util.UUID;
 public class UserResource {
 
     private final UserService service;
+    private final ReadingService readingService;
+    private final ReviewService reviewService;
+    private final FavoriteService favoriteService;
 
-    public UserResource(UserService service) {
+    public UserResource(UserService service, ReadingService readingService, ReviewService reviewService, FavoriteService favoriteService) {
         this.service = service;
+        this.readingService = readingService;
+        this.reviewService = reviewService;
+        this.favoriteService = favoriteService;
     }
 
     @GetMapping
@@ -50,5 +62,20 @@ public class UserResource {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{userId}/readings")
+    public ResponseEntity<List<ReadingResponse>> findReadingsByUserId(@PathVariable UUID userId) {
+        return ResponseEntity.ok(readingService.findByUserId(userId));
+    }
+
+    @GetMapping("/{userId}/reviews")
+    public ResponseEntity<List<ReviewResponse>> findReviewsByUserId(@PathVariable UUID userId) {
+        return ResponseEntity.ok(reviewService.findByUserId(userId));
+    }
+
+    @GetMapping("/{userId}/favorites")
+    public ResponseEntity<List<FavoriteResponse>> findFavoritesByUserId(@PathVariable UUID userId) {
+        return ResponseEntity.ok(favoriteService.findByUserId(userId));
     }
 }
