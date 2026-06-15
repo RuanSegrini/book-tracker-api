@@ -12,27 +12,27 @@ import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundExceptio
 import com.ruan.booktracker.book_tracker_api.repositories.BookRepository;
 import com.ruan.booktracker.book_tracker_api.repositories.ReadingRepository;
 import com.ruan.booktracker.book_tracker_api.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReadingService {
 
     private final ReadingRepository repository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
-    public ReadingService(ReadingRepository repository, UserRepository userRepository, BookRepository bookRepository) {
-        this.repository = repository;
-        this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
-    }
-
-    public List<ReadingResponse> findAll() {
-        return repository.findAll().stream().map(ReadingResponse::new).toList();
+    public Page<ReadingResponse> findAll(Pageable pageable) {
+        return repository.findAll(pageable).map(ReadingResponse::new);
     }
 
     public ReadingResponse findById(UUID id) {
@@ -41,6 +41,7 @@ public class ReadingService {
         return new ReadingResponse(entity);
     }
 
+    @Transactional
     public ReadingResponse insert(CreateReadingRequest dto) {
         User user = userRepository.findById(dto.userId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", dto.userId()));
@@ -63,6 +64,7 @@ public class ReadingService {
         return new ReadingResponse(entity);
     }
 
+    @Transactional
     public ReadingResponse update(UUID id, UpdateReadingRequest dto) {
         Reading entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reading", id));
@@ -90,6 +92,7 @@ public class ReadingService {
         return repository.findByBookId(bookId).stream().map(ReadingResponse::new).toList();
     }
 
+    @Transactional
     public void delete(UUID id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Reading", id);

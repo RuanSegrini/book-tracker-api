@@ -5,6 +5,9 @@ import com.ruan.booktracker.book_tracker_api.dto.reading.request.UpdateReadingRe
 import com.ruan.booktracker.book_tracker_api.dto.reading.response.ReadingResponse;
 import com.ruan.booktracker.book_tracker_api.services.ReadingService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -14,18 +17,15 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/readings")
 public class ReadingResource {
 
     private final ReadingService service;
 
-    public ReadingResource(ReadingService service) {
-        this.service = service;
-    }
-
     @GetMapping
-    public ResponseEntity<List<ReadingResponse>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<Page<ReadingResponse>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/{id}")

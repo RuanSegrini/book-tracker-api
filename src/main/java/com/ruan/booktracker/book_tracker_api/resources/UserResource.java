@@ -11,6 +11,9 @@ import com.ruan.booktracker.book_tracker_api.services.ReadingService;
 import com.ruan.booktracker.book_tracker_api.services.ReviewService;
 import com.ruan.booktracker.book_tracker_api.services.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/users")
 public class UserResource {
 
@@ -28,16 +32,9 @@ public class UserResource {
     private final ReviewService reviewService;
     private final FavoriteService favoriteService;
 
-    public UserResource(UserService service, ReadingService readingService, ReviewService reviewService, FavoriteService favoriteService) {
-        this.service = service;
-        this.readingService = readingService;
-        this.reviewService = reviewService;
-        this.favoriteService = favoriteService;
-    }
-
     @GetMapping
-    public ResponseEntity<List<UserResponse>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<Page<UserResponse>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/{id}")

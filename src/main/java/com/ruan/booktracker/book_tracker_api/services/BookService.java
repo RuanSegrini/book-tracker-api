@@ -6,22 +6,23 @@ import com.ruan.booktracker.book_tracker_api.dto.book.response.BookResponse;
 import com.ruan.booktracker.book_tracker_api.entities.Book;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.BookRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookService {
 
     private final BookRepository repository;
 
-    public BookService(BookRepository repository) {
-        this.repository = repository;
-    }
-
-    public List<BookResponse> findAll() {
-        return repository.findAll().stream().map(BookResponse::new).toList();
+    public Page<BookResponse> findAll(Pageable pageable) {
+        return repository.findAll(pageable).map(BookResponse::new);
     }
 
     public BookResponse findById(UUID id) {
@@ -30,6 +31,7 @@ public class BookService {
         return new BookResponse(entity);
     }
 
+    @Transactional
     public BookResponse insert(CreateBookRequest dto) {
         Book entity = new Book();
         entity.setTitle(dto.title());
@@ -40,6 +42,7 @@ public class BookService {
         return new BookResponse(entity);
     }
 
+    @Transactional
     public BookResponse update(UUID id, UpdateBookRequest dto) {
         Book entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", id));
@@ -51,6 +54,7 @@ public class BookService {
         return new BookResponse(entity);
     }
 
+    @Transactional
     public void delete(UUID id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Book", id);

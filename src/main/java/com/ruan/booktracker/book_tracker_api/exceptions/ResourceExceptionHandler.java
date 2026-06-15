@@ -1,6 +1,7 @@
 package com.ruan.booktracker.book_tracker_api.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,6 +36,13 @@ public class ResourceExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new StandardError(LocalDateTime.now(), 400, "Bad Request", message, request.getRequestURI())
+        );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<StandardError> dataIntegrity(DataIntegrityViolationException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(
+                new StandardError(LocalDateTime.now(), 422, "Unprocessable Entity", "Resource already exists", request.getRequestURI())
         );
     }
 }

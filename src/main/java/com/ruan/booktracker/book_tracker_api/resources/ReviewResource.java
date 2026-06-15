@@ -5,6 +5,9 @@ import com.ruan.booktracker.book_tracker_api.dto.review.request.UpdateReviewRequ
 import com.ruan.booktracker.book_tracker_api.dto.review.response.ReviewResponse;
 import com.ruan.booktracker.book_tracker_api.services.ReviewService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -14,18 +17,15 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/reviews")
 public class ReviewResource {
 
     private final ReviewService service;
 
-    public ReviewResource(ReviewService service) {
-        this.service = service;
-    }
-
     @GetMapping
-    public ResponseEntity<List<ReviewResponse>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<Page<ReviewResponse>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/{id}")

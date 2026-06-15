@@ -4,6 +4,9 @@ import com.ruan.booktracker.book_tracker_api.dto.favorite.request.CreateFavorite
 import com.ruan.booktracker.book_tracker_api.dto.favorite.response.FavoriteResponse;
 import com.ruan.booktracker.book_tracker_api.services.FavoriteService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,18 +16,15 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/favorites")
 public class FavoriteResource {
 
     private final FavoriteService service;
 
-    public FavoriteResource(FavoriteService service) {
-        this.service = service;
-    }
-
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<Page<FavoriteResponse>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/{id}")

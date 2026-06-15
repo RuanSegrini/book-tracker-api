@@ -6,22 +6,23 @@ import com.ruan.booktracker.book_tracker_api.dto.user.response.UserResponse;
 import com.ruan.booktracker.book_tracker_api.entities.User;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository repository;
 
-    public UserService(UserRepository repository) {
-        this.repository = repository;
-    }
-
-    public List<UserResponse> findAll() {
-        return repository.findAll().stream().map(UserResponse::new).toList();
+    public Page<UserResponse> findAll(Pageable pageable) {
+        return repository.findAll(pageable).map(UserResponse::new);
     }
 
     public UserResponse findById(UUID id) {
@@ -30,6 +31,7 @@ public class UserService {
         return new UserResponse(entity);
     }
 
+    @Transactional
     public UserResponse insert(CreateUserRequest dto) {
         User entity = new User();
         entity.setName(dto.name());
@@ -39,6 +41,7 @@ public class UserService {
         return new UserResponse(entity);
     }
 
+    @Transactional
     public UserResponse update(UUID id, UpdateUserRequest dto) {
         User entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
@@ -48,6 +51,7 @@ public class UserService {
         return new UserResponse(entity);
     }
 
+    @Transactional
     public void delete(UUID id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("User", id);

@@ -10,26 +10,26 @@ import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundExceptio
 import com.ruan.booktracker.book_tracker_api.repositories.BookRepository;
 import com.ruan.booktracker.book_tracker_api.repositories.FavoriteRepository;
 import com.ruan.booktracker.book_tracker_api.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FavoriteService {
 
     private final FavoriteRepository repository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
-    public FavoriteService(FavoriteRepository repository, UserRepository userRepository, BookRepository bookRepository) {
-        this.repository = repository;
-        this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
-    }
-
-    public List<FavoriteResponse> findAll() {
-        return repository.findAll().stream().map(FavoriteResponse::new).toList();
+    public Page<FavoriteResponse> findAll(Pageable pageable) {
+        return repository.findAll(pageable).map(FavoriteResponse::new);
     }
 
     public FavoriteResponse findById(UUID id) {
@@ -38,6 +38,7 @@ public class FavoriteService {
         return new FavoriteResponse(entity);
     }
 
+    @Transactional
     public FavoriteResponse insert(CreateFavoriteRequest dto) {
         if (repository.existsByUserIdAndBookId(dto.userId(), dto.bookId())) {
             throw new BusinessRuleException("User has already favorited this book");
@@ -60,6 +61,7 @@ public class FavoriteService {
         return repository.findByUserId(userId).stream().map(FavoriteResponse::new).toList();
     }
 
+    @Transactional
     public void delete(UUID id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Favorite", id);
