@@ -1,59 +1,53 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
-
-import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingCreateDTO;
-import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingDTO;
-import com.ruan.booktracker.book_tracker_api.dto.reading.ReadingUpdateDTO;
-import com.ruan.booktracker.book_tracker_api.entities.Reading;
+import com.ruan.booktracker.book_tracker_api.dto.reading.request.CreateReadingRequest;
+import com.ruan.booktracker.book_tracker_api.dto.reading.request.UpdateReadingRequest;
+import com.ruan.booktracker.book_tracker_api.dto.reading.response.ReadingResponse;
 import com.ruan.booktracker.book_tracker_api.services.ReadingService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/readings")
 public class ReadingResource {
 
-    @Autowired
-    private ReadingService service;
+    private final ReadingService service;
 
-    @GetMapping
-    public ResponseEntity<List<ReadingDTO>> findAll(){
-        List<ReadingDTO> list = service.findAll();
-        return ResponseEntity.ok().body(list);
+    public ReadingResource(ReadingService service) {
+        this.service = service;
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<ReadingDTO> findById(@PathVariable Long id) {
-        ReadingDTO obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+    @GetMapping
+    public ResponseEntity<List<ReadingResponse>> findAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReadingResponse> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ReadingDTO> insert(@RequestBody @Valid ReadingCreateDTO dto) {
-        ReadingDTO readingDTO = service.insert(dto);
-
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(readingDTO.id())
-                .toUri();
-        return ResponseEntity.created(uri).body(readingDTO);
+    public ResponseEntity<ReadingResponse> insert(@Valid @RequestBody CreateReadingRequest dto) {
+        ReadingResponse response = service.insert(dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(response.id()).toUri();
+        return ResponseEntity.created(uri).body(response);
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<ReadingDTO> update(@PathVariable Long id, @RequestBody @Valid ReadingUpdateDTO dto) {
-        ReadingDTO obj = service.update(id, dto);
-        return ResponseEntity.ok(obj);
+    @PutMapping("/{id}")
+    public ResponseEntity<ReadingResponse> update(@PathVariable UUID id, @Valid @RequestBody UpdateReadingRequest dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

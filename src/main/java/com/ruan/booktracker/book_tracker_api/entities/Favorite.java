@@ -1,79 +1,57 @@
 package com.ruan.booktracker.book_tracker_api.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
-@Table(
-        name = "tb_favorite",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "book_id"})
-)
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "tb_favorite",
+       uniqueConstraints = @UniqueConstraint(name = "uk_favorite_user_book",
+                                              columnNames = {"user_id", "book_id"}))
 public class Favorite implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
     @PrePersist
-    public void prePersist() {
-        createdAt = LocalDateTime.now();
+    private void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Favorite() {}
-
-    public Favorite(Long id, User user, Book book) {
-        this.id = id;
-        this.user = user;
-        this.book = book;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
+    public boolean isFavorited() {
+        return true;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Favorite that)) return false;
-        if (id == null || that.id == null) return false;
-        return Objects.equals(id, that.id);
+        if (o == null || getClass() != o.getClass()) return false;
+        Favorite favorite = (Favorite) o;
+        return Objects.equals(id, favorite.id);
     }
 
     @Override

@@ -1,25 +1,29 @@
 package com.ruan.booktracker.book_tracker_api.entities;
 
-import com.ruan.booktracker.book_tracker_api.entities.enums.Genre;
+import com.ruan.booktracker.book_tracker_api.entities.enums.BookGenre;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "tb_book")
 public class Book implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
     private String title;
@@ -32,76 +36,21 @@ public class Book implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Genre genre;
+    private BookGenre genre;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
-    public void prePersist() {
-        createdAt = LocalDateTime.now();
-    }
-
-    public Book() {
-    }
-
-    public Book(Long id, String title, String author, Integer totalPages, Genre genre) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.totalPages = totalPages;
-        this.genre = genre;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public Integer getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(Integer totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public Genre getGenre() {
-        return genre;
-    }
-
-    public void setGenre(Genre genre) {
-        this.genre = genre;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    private void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if (!(o instanceof Book book)) return false;
-        if(id == null || book.id == null) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
         return Objects.equals(id, book.id);
     }
 

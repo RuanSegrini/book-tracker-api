@@ -1,61 +1,53 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
-
-import com.ruan.booktracker.book_tracker_api.dto.user.UserCreateDTO;
-import com.ruan.booktracker.book_tracker_api.dto.user.UserDTO;
-import com.ruan.booktracker.book_tracker_api.dto.user.UserUpdateDTO;
-import com.ruan.booktracker.book_tracker_api.entities.User;
+import com.ruan.booktracker.book_tracker_api.dto.user.request.CreateUserRequest;
+import com.ruan.booktracker.book_tracker_api.dto.user.request.UpdateUserRequest;
+import com.ruan.booktracker.book_tracker_api.dto.user.response.UserResponse;
 import com.ruan.booktracker.book_tracker_api.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
 
-    @Autowired
-    private UserService service;
+    private final UserService service;
+
+    public UserResource(UserService service) {
+        this.service = service;
+    }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> findAll(){
-        List<UserDTO> list = service.findAll();
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<List<UserResponse>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
-        UserDTO obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.findById(id));
     }
-
 
     @PostMapping
-    public ResponseEntity<UserDTO> insert(@RequestBody @Valid UserCreateDTO dto) {
-        UserDTO userDTO = service.insert(dto);
-
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(userDTO.id())
-                .toUri();
-
-        return ResponseEntity.created(uri).body(userDTO);
+    public ResponseEntity<UserResponse> insert(@Valid @RequestBody CreateUserRequest dto) {
+        UserResponse response = service.insert(dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(response.id()).toUri();
+        return ResponseEntity.created(uri).body(response);
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody @Valid UserUpdateDTO dto) {
-        UserDTO obj = service.update(id, dto);
-        return ResponseEntity.ok(obj);
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> update(@PathVariable UUID id, @Valid @RequestBody UpdateUserRequest dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

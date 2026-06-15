@@ -1,107 +1,62 @@
 package com.ruan.booktracker.book_tracker_api.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
-@Table(name = "tb_review")
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "tb_review",
+       uniqueConstraints = @UniqueConstraint(name = "uk_review_user_book",
+                                              columnNames = {"user_id", "book_id"}))
 public class Review implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
-    @NotNull
-    @Min(1)
-    @Max(5)
     private Integer rating;
 
     @Column(nullable = false)
-    @NotBlank
     private String comment;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
     @PrePersist
-    public void prePersist() {
-        createdAt = LocalDateTime.now();
+    private void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Review() {}
-
-    public Review(Long id, Integer rating, String comment, User user, Book book) {
-        this.id = id;
-        this.rating = rating;
-        this.comment = comment;
-        this.user = user;
-        this.book = book;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
+    public boolean isValidRating() {
+        return rating != null && rating >= 1 && rating <= 5;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Review review)) return false;
-        if (id == null || review.id == null) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review review = (Review) o;
         return Objects.equals(id, review.id);
     }
 

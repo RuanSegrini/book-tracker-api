@@ -1,69 +1,56 @@
 package com.ruan.booktracker.book_tracker_api.services;
 
-import java.util.List;
-
-import com.ruan.booktracker.book_tracker_api.dto.user.UserCreateDTO;
-import com.ruan.booktracker.book_tracker_api.dto.user.UserDTO;
-import com.ruan.booktracker.book_tracker_api.dto.user.UserUpdateDTO;
+import com.ruan.booktracker.book_tracker_api.dto.user.request.CreateUserRequest;
+import com.ruan.booktracker.book_tracker_api.dto.user.request.UpdateUserRequest;
+import com.ruan.booktracker.book_tracker_api.dto.user.response.UserResponse;
 import com.ruan.booktracker.book_tracker_api.entities.User;
 import com.ruan.booktracker.book_tracker_api.exceptions.ResourceNotFoundException;
 import com.ruan.booktracker.book_tracker_api.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository repository;
+    private final UserRepository repository;
 
-    public List<UserDTO> findAll() {
-        List<User> list= repository.findAll();
-
-        return list.stream()
-                .map(UserDTO::new)
-                .toList();
+    public UserService(UserRepository repository) {
+        this.repository = repository;
     }
 
-    public UserDTO findById(Long id) {
+    public List<UserResponse> findAll() {
+        return repository.findAll().stream().map(UserResponse::new).toList();
+    }
+
+    public UserResponse findById(UUID id) {
         User entity = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(id));
-
-        return new UserDTO(entity);
+                .orElseThrow(() -> new ResourceNotFoundException("User", id));
+        return new UserResponse(entity);
     }
 
-    public UserDTO insert(UserCreateDTO dto) {
-
+    public UserResponse insert(CreateUserRequest dto) {
         User entity = new User();
-
         entity.setName(dto.name());
         entity.setEmail(dto.email());
         entity.setPassword(dto.password());
-
         entity = repository.save(entity);
-
-        return new UserDTO(entity);
+        return new UserResponse(entity);
     }
 
-    public UserDTO update(Long id, UserUpdateDTO dto) {
+    public UserResponse update(UUID id, UpdateUserRequest dto) {
         User entity = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(id));
-
-        updateData(dto, entity);
-
-        entity = repository.save(entity);
-
-        return new UserDTO(entity);
-    }
-
-    private void updateData(UserUpdateDTO dto,User entity ) {
+                .orElseThrow(() -> new ResourceNotFoundException("User", id));
         entity.setName(dto.name());
         entity.setEmail(dto.email());
+        entity = repository.save(entity);
+        return new UserResponse(entity);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException(id);
+            throw new ResourceNotFoundException("User", id);
         }
         repository.deleteById(id);
     }

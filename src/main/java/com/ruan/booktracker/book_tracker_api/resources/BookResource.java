@@ -1,65 +1,54 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
-
-import com.ruan.booktracker.book_tracker_api.dto.book.BookCreateDTO;
-import com.ruan.booktracker.book_tracker_api.dto.book.BookDTO;
-import com.ruan.booktracker.book_tracker_api.dto.book.BookUpdateDTO;
+import com.ruan.booktracker.book_tracker_api.dto.book.request.CreateBookRequest;
+import com.ruan.booktracker.book_tracker_api.dto.book.request.UpdateBookRequest;
+import com.ruan.booktracker.book_tracker_api.dto.book.response.BookResponse;
 import com.ruan.booktracker.book_tracker_api.services.BookService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/books")
 public class BookResource {
 
-    @Autowired
-    private BookService service;
+    private final BookService service;
 
-    @GetMapping
-    public ResponseEntity<List<BookDTO>> findAll(){
-        List<BookDTO> list = service.findAll();
-        return ResponseEntity.ok().body(list);
+    public BookResource(BookService service) {
+        this.service = service;
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<BookDTO> findById(@PathVariable Long id) {
-        BookDTO obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+    @GetMapping
+    public ResponseEntity<List<BookResponse>> findAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BookResponse> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<BookDTO> insert(
-            @RequestBody @Valid BookCreateDTO dto
-    ) {
-
-        BookDTO bookDTO = service.insert(dto);
-
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(bookDTO.id())
-                .toUri();
-
-        return ResponseEntity.created(uri).body(bookDTO);
+    public ResponseEntity<BookResponse> insert(@Valid @RequestBody CreateBookRequest dto) {
+        BookResponse response = service.insert(dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(response.id()).toUri();
+        return ResponseEntity.created(uri).body(response);
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<BookDTO> update(@PathVariable Long id, @RequestBody @Valid BookUpdateDTO dto) {
-
-        BookDTO obj = service.update(id, dto);
-        return ResponseEntity.ok(obj);
+    @PutMapping("/{id}")
+    public ResponseEntity<BookResponse> update(@PathVariable UUID id, @Valid @RequestBody UpdateBookRequest dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 }

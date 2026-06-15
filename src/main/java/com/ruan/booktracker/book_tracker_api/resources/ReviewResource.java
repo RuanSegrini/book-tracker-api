@@ -1,59 +1,53 @@
 package com.ruan.booktracker.book_tracker_api.resources;
 
-
-import com.ruan.booktracker.book_tracker_api.dto.review.ReviewCreateDTO;
-import com.ruan.booktracker.book_tracker_api.dto.review.ReviewDTO;
-import com.ruan.booktracker.book_tracker_api.dto.review.ReviewUpdateDTO;
-import com.ruan.booktracker.book_tracker_api.entities.Review;
+import com.ruan.booktracker.book_tracker_api.dto.review.request.CreateReviewRequest;
+import com.ruan.booktracker.book_tracker_api.dto.review.request.UpdateReviewRequest;
+import com.ruan.booktracker.book_tracker_api.dto.review.response.ReviewResponse;
 import com.ruan.booktracker.book_tracker_api.services.ReviewService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/reviews")
 public class ReviewResource {
 
-    @Autowired
-    private ReviewService service;
+    private final ReviewService service;
 
-    @GetMapping
-    public ResponseEntity<List<ReviewDTO>> findAll() {
-        List<ReviewDTO> list = service.findAll();
-        return ResponseEntity.ok().body(list);
+    public ReviewResource(ReviewService service) {
+        this.service = service;
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<ReviewDTO> findById(@PathVariable Long id) {
-        ReviewDTO obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+    @GetMapping
+    public ResponseEntity<List<ReviewResponse>> findAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReviewResponse> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ReviewDTO> insert(@RequestBody @Valid ReviewCreateDTO dto) {
-        ReviewDTO reviewDTO = service.insert(dto);
-
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(reviewDTO.id())
-                .toUri();
-        return ResponseEntity.created(uri).body(reviewDTO);
+    public ResponseEntity<ReviewResponse> insert(@Valid @RequestBody CreateReviewRequest dto) {
+        ReviewResponse response = service.insert(dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(response.id()).toUri();
+        return ResponseEntity.created(uri).body(response);
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<ReviewDTO> update(@PathVariable Long id, @RequestBody @Valid ReviewUpdateDTO dto) {
-        ReviewDTO obj = service.update(id, dto);
-        return ResponseEntity.ok(obj);
+    @PutMapping("/{id}")
+    public ResponseEntity<ReviewResponse> update(@PathVariable UUID id, @Valid @RequestBody UpdateReviewRequest dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

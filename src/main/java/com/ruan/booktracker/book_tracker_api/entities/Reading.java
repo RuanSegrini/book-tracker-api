@@ -1,28 +1,31 @@
 package com.ruan.booktracker.book_tracker_api.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ruan.booktracker.book_tracker_api.entities.enums.ReadingStatus;
 import jakarta.persistence.*;
-
-import jakarta.validation.constraints.Min;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "tb_reading")
 public class Reading implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
-    @Min(value = 1)
     private Integer currentPage;
 
     @Enumerated(EnumType.STRING)
@@ -35,7 +38,7 @@ public class Reading implements Serializable {
     private LocalDateTime finishedAt;
 
     @ManyToOne
-    @JsonBackReference
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
@@ -43,76 +46,8 @@ public class Reading implements Serializable {
     private Book book;
 
     @PrePersist
-    public void prePersist() {
-        startedAt = LocalDateTime.now();
-    }
-
-
-    public Reading() {
-    }
-
-    public Reading(Long id, Integer currentPage, ReadingStatus status, User user, Book book) {
-        this.id = id;
-        this.currentPage = currentPage;
-        this.status = status;
-        this.user = user;
-        this.book = book;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(Integer currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public ReadingStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ReadingStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getStartedAt() {
-        return startedAt;
-    }
-
-    public void setStartedAt(LocalDateTime startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public LocalDateTime getFinishedAt() {
-        return finishedAt;
-    }
-
-    public void setFinishedAt(LocalDateTime finishedAt) {
-        this.finishedAt = finishedAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
+    private void prePersist() {
+        this.startedAt = LocalDateTime.now();
     }
 
     public boolean isCompleted() {
@@ -121,9 +56,9 @@ public class Reading implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if (!(o instanceof Reading reading)) return false;
-        if(id == null || reading.id == null) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reading reading = (Reading) o;
         return Objects.equals(id, reading.id);
     }
 
