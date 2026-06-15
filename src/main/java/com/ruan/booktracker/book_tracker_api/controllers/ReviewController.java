@@ -1,4 +1,4 @@
-package com.ruan.booktracker.book_tracker_api.resources;
+package com.ruan.booktracker.book_tracker_api.controllers;
 
 import com.ruan.booktracker.book_tracker_api.dto.review.request.CreateReviewRequest;
 import com.ruan.booktracker.book_tracker_api.dto.review.request.UpdateReviewRequest;
@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/reviews")
-public class ReviewResource {
+public class ReviewController {
 
     private final ReviewService service;
 

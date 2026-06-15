@@ -1,4 +1,4 @@
-package com.ruan.booktracker.book_tracker_api.resources;
+package com.ruan.booktracker.book_tracker_api.controllers;
 
 import com.ruan.booktracker.book_tracker_api.dto.book.request.CreateBookRequest;
 import com.ruan.booktracker.book_tracker_api.dto.book.request.UpdateBookRequest;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/books")
-public class BookResource {
+public class BookController {
 
     private final BookService service;
     private final ReadingService readingService;

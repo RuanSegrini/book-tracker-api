@@ -1,4 +1,4 @@
-package com.ruan.booktracker.book_tracker_api.resources;
+package com.ruan.booktracker.book_tracker_api.controllers;
 
 import com.ruan.booktracker.book_tracker_api.dto.favorite.response.FavoriteResponse;
 import com.ruan.booktracker.book_tracker_api.dto.reading.response.ReadingResponse;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/users")
-public class UserResource {
+public class UserController {
 
     private final UserService service;
     private final ReadingService readingService;

@@ -1,4 +1,4 @@
-package com.ruan.booktracker.book_tracker_api.resources;
+package com.ruan.booktracker.book_tracker_api.controllers;
 
 import com.ruan.booktracker.book_tracker_api.dto.favorite.request.CreateFavoriteRequest;
 import com.ruan.booktracker.book_tracker_api.dto.favorite.response.FavoriteResponse;
@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/favorites")
-public class FavoriteResource {
+public class FavoriteController {
 
     private final FavoriteService service;
 
